@@ -13,10 +13,14 @@ namespace CRUD.Controllers
     public class ContactoController : Controller
     {
         private static string conexion = ConfigurationManager.ConnectionStrings["cadena"].ToString();
-        private static List<Contacto> contactos = new List<Contacto>();
+
+        private static List<Contacto> olista = new List<Contacto>();
+
         // GET: Contacto
         public ActionResult Inicio()
         {
+            olista = new List<Contacto>(); //inicializar la lista(la limpia)
+
             using (SqlConnection oconexion = new SqlConnection(conexion))
             {
                 SqlCommand cmd = new SqlCommand("SELECT * FROM Contacto", oconexion);
@@ -25,10 +29,20 @@ namespace CRUD.Controllers
 
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
+                    while (dr.Read())
+                    {
+                        Contacto nuevoContacto = new Contacto(); //tipo de clase contacto
+                        nuevoContacto.IdContacto = Convert.ToInt32(dr["IdContacto"]);
+                        nuevoContacto.Nombres = dr["Nombres"].ToString();
+                        nuevoContacto.Apellidos = dr["Apellidos"].ToString();
+                        nuevoContacto.Telefono = dr["Telefono"].ToString();
+                        nuevoContacto.Correo = dr["Correo"].ToString();
 
+                        olista.Add(nuevoContacto); //agregar a la lista
+                    }
                 }
             }
-                return View();
+                return View(olista);
         }
     }
 }
