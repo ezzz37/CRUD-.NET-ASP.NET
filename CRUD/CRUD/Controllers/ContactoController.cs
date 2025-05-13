@@ -45,8 +45,17 @@ namespace CRUD.Controllers
                 return View(olista);
         }
 
+        [HttpGet] //devuelve la vista
         public ActionResult Registrar()
         {
+            return View();
+        }
+
+        [HttpPost] //se pueden enviar elementos
+        public ActionResult Registrar(Contacto ocontacto)
+        {
+            string a = ocontacto.Nombres;
+
             return View();
         }
     }
