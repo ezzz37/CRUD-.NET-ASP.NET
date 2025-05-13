@@ -44,5 +44,10 @@ namespace CRUD.Controllers
             }
                 return View(olista);
         }
+
+        public ActionResult Registrar()
+        {
+            return View();
+        }
     }
 }
