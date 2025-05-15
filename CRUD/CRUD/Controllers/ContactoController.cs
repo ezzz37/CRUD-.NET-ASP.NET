@@ -51,12 +51,56 @@ namespace CRUD.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult Editar(int? idcontacto)
+        {
+            if(idcontacto == null)
+            {
+                return RedirectToAction("Inicio", "Contacto");
+            }
+
+            Contacto ocontacto = olista.Where(c => c.IdContacto == idcontacto).FirstOrDefault();
+
+            return View(ocontacto);
+        }
+
         [HttpPost] //se pueden enviar elementos
         public ActionResult Registrar(Contacto ocontacto)
         {
-            string a = ocontacto.Nombres;
+            olista = new List<Contacto>();
 
-            return View();
+            using (SqlConnection oconexion = new SqlConnection(conexion))
+            {
+                SqlCommand cmd = new SqlCommand("SP_REGISTRAR", oconexion);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("Nombres", ocontacto.Nombres);
+                cmd.Parameters.AddWithValue("Apellidos", ocontacto.Apellidos);
+                cmd.Parameters.AddWithValue("Telefono", ocontacto.Telefono);
+                cmd.Parameters.AddWithValue("Correo", ocontacto.Correo);
+                oconexion.Open();
+                cmd.ExecuteNonQuery();
+            }
+            return RedirectToAction("Inicio","Contacto");
+        }
+
+        [HttpPost]
+        public ActionResult Editar(Contacto ocontacto)
+        {
+            olista = new List<Contacto>();
+
+            using (SqlConnection oconexion = new SqlConnection(conexion))
+            {
+                SqlCommand cmd = new SqlCommand("SP_EDITAR", oconexion);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("IdContacto", ocontacto.IdContacto);
+                cmd.Parameters.AddWithValue("Nombres", ocontacto.Nombres);
+                cmd.Parameters.AddWithValue("Apellidos", ocontacto.Apellidos);
+                cmd.Parameters.AddWithValue("Telefono", ocontacto.Telefono);
+                cmd.Parameters.AddWithValue("Correo", ocontacto.Correo);
+                oconexion.Open();
+                cmd.ExecuteNonQuery();
+            }
+            return RedirectToAction("Inicio", "Contacto");
         }
     }
 }
